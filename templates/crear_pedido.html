@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Crear Pedido{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Crear Pedido</h2>
+
+<form method="post" enctype="multipart/form-data" class="row g-3">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label">Cliente</label>
+        <input type="text" name="cliente" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="forma-label">Producto</label>
+        <select name="producto" class="form-select" required>
+            {% for p in productos %}
+                <option value="{{ p.id }}">{{ p.nombre }} - ${{ p.precio_base }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Cantidad</label>
+        <input type="number" name="cantidad" class="form-control" min="1" value="1" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear Pedido</button>
+</form>
+
+{% endblock %}
