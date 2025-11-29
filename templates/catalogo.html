@@ -8,13 +8,13 @@
     {% for p in productos %}
     <div class="col-md-4 mb-4">
         <div class="card h-100">
-            <img src="{{ p.imagen_principal.url }}" class="card-img-top" alt="{{ p.nombre }}">
+            <img src="{% if p.imagen_principal %}{{ p.imagen_principal.url }}{% endif %}" class="card-img-top" alt="{{ p.nombre }}">
             <div class="card-body">
                 <h5 class="card-title">{{ p.nombre }}</h5>
                 <p class="card-text">${{ p.precio_base }}</p>
             </div>
             <div class="card-footer">
-                <a href="{% url 'detalle_producto' p.slug %}" class="btn btn-primary">Ver Detalles</a>
+                <a href="{% url 'mainApp:detalle_producto' p.slug %}" class="btn btn-primary">Ver Detalles</a>
             </div>
         </div>
     </div>
