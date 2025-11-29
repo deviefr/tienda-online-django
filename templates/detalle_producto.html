@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width:700px; margin:auto;">
+    
+    <h2 class="mb-3">Seguimiento de Pedido</h2>
+
+    <form method="GET" action="" class="mb-4">
+        <input type="text" name="token" value="{{ token }}"
+               class="form-control" placeholder="Ingresa tu token de seguimiento" required>
+        <button class="btn btn-primary mt-2">Buscar</button>
+    </form>
+
+    {% if token and not pedido %}
+        <div class="alert alert-danger">
+            No se encontró un pedido con el token <strong>{{ token }}</strong>.
+        </div>
+    {% endif %}
+
+    {% if pedido %}
+    <div class="card p-3">
+
+        <h4>Pedido encontrado</h4>
+
+        <p><strong>Token:</strong> {{ pedido.token }}</p>
+        <p><strong>Cliente:</strong> {{ pedido.cliente_nombre }}</p>
+        <p><strong>Producto:</strong> {{ pedido.producto.nombre }}</p>
+        <p><strong>Plataforma:</strong> {{ pedido.get_plataforma_display }}</p>
+
+        <hr>
+
+        <p><strong>Estado del pedido:</strong> 
+            <span class="badge bg-info">{{ pedido.get_estado_display }}</span>
+        </p>
+
+        <p><strong>Estado del pago:</strong> 
+            <span class="badge bg-warning">{{ pedido.get_estado_pago_display }}</span>
+        </p>
+
+        <p><strong>Total:</strong> ${{ pedido.total }}</p>
+
+        <hr>
+
+        <h5>Imágenes adjuntas</h5>
+        {% if pedido.imagenes.all %}
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                {% for img in pedido.imagenes.all %}
+                    <img src="{{ img.imagen.url }}" style="width:120px; border-radius:8px;">
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No hay imágenes para este pedido.</p>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
