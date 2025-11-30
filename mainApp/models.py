@@ -48,9 +48,9 @@ class Producto(models.Model):
     
     @property
     def imagen_principal(self):
-        return self.imagenes.first()
-        if imagen:
-            return imagen.imagen
+        imagen_obj = self.imagenes.first()
+        if imagen_obj:
+            return imagen_obj.imagen
         return None
     
 class ProductoImagen(models.Model):

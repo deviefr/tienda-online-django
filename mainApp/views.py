@@ -14,9 +14,14 @@ def catalogo(request):
         productos = productos.filter(nombre__icontains=q)
     
     categorias = Categoria.objects.all()
+    categoria_actual = None
+    if cat:
+        categoria_actual = Categoria.objects.filter(slug=cat).first()
+
     return render(request, 'catalogo.html', {
         'productos': productos,
-        'categorias': categorias
+        'categorias': categorias,
+        'categoria_actual': categoria_actual,
     })
 
 
@@ -25,16 +30,24 @@ def detalle_producto(request, slug):
     return render(request, 'detalle_producto.html', {'producto': producto})
 
 
-def crear_pedido(request):
+def crear_pedido(request, slug=None):
+    """
+    Crear un pedido. Si se pasa `slug`, preselecciona el producto en el formulario.
+    """
+    initial = {}
+    if slug:
+        producto = Producto.objects.filter(slug=slug).first()
+        if producto:
+            initial['producto'] = producto
+
     if request.method == 'POST':
         form = PedidoForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return render(request, 'pedido_creado.html')
-        else:
-            return render(request, 'crear_pedido.html', {'form': form})
+    else:
+        form = PedidoForm(initial=initial)
 
-    form = PedidoForm()
     return render(request, 'crear_pedido.html', {'form': form})
 
 

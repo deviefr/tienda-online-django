@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Pedido Creado{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width:640px;">
+    <div class="alert alert-success">
+        <h4 class="alert-heading">Pedido creado</h4>
+        <p>Tu pedido se ha registrado correctamente. Te llegará un token de seguimiento.</p>
+    </div>
+    <a href="{% url 'mainApp:catalogo' %}" class="btn btn-primary">Volver al catálogo</a>
+</div>
+{% endblock %}

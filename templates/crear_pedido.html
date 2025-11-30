@@ -2,30 +2,61 @@
 {% block title %}Crear Pedido{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Crear Pedido</h2>
+<div class="card mx-auto" style="max-width:720px;">
+  <div class="card-body">
+    <h3 class="card-title mb-3">Crear Pedido</h3>
+    {% if form %}
+    <form method="post" enctype="multipart/form-data" class="row g-3">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="col-12">
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            </div>
+        {% endif %}
 
-<form method="post" enctype="multipart/form-data" class="row g-3">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label class="form-label">Cliente</label>
-        <input type="text" name="cliente" class="form-control" required>
-    </div>
+        <div class="col-12 col-md-6">
+            <label class="form-label">Nombre cliente</label>
+            {{ form.cliente_nombre }}
+        </div>
 
-    <div class="mb-3">
-        <label class="forma-label">Producto</label>
-        <select name="producto" class="form-select" required>
-            {% for p in productos %}
-                <option value="{{ p.id }}">{{ p.nombre }} - ${{ p.precio_base }}</option>
-            {% endfor %}
-        </select>
-    </div>
+        <div class="col-12 col-md-6">
+            <label class="form-label">Contacto</label>
+            {{ form.cliente_contacto }}
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Cantidad</label>
-        <input type="number" name="cantidad" class="form-control" min="1" value="1" required>
-    </div>
+        <div class="col-12">
+            <label class="form-label">Producto</label>
+            {{ form.producto }}
+        </div>
 
-    <button type="submit" class="btn btn-primary">Crear Pedido</button>
-</form>
+        <div class="col-12">
+            <label class="form-label">Descripción / referencia</label>
+            {{ form.descripcion }}
+        </div>
+
+        <div class="col-12 col-md-6">
+            <label class="form-label">Plataforma</label>
+            {{ form.plataforma }}
+        </div>
+
+        <div class="col-12 col-md-6">
+            <label class="form-label">Fecha solicitud</label>
+            {{ form.fecha_solicitud }}
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Imágenes de referencia</label>
+            <input type="file" name="imagenes" multiple class="form-control">
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Crear Pedido</button>
+        </div>
+    </form>
+    {% else %}
+    <div class="alert alert-warning">Formulario no disponible.</div>
+    {% endif %}
+  </div>
+</div>
 
 {% endblock %}

@@ -2,19 +2,45 @@
 {% block title %}Catálogo{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">Catálogo de Productos</h2>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="m-0">Catálogo de Productos</h2>
+        {% if categoria_actual %}
+            <small class="text-muted">Categoría: {{ categoria_actual.nombre }}</small>
+        {% endif %}
+    </div>
+    <small class="text-muted">{{ productos.count }} productos</small>
+</div>
+
+<div class="mb-3">
+    <div class="btn-group" role="group" aria-label="categorias">
+        <a href="{% url 'mainApp:catalogo' %}" class="btn btn-outline-secondary {% if not categoria_actual %}active{% endif %}">Todas</a>
+        {% for c in categorias %}
+            <a href="{% url 'mainApp:catalogo' %}?categoria={{ c.slug }}" class="btn btn-outline-secondary {% if categoria_actual and categoria_actual.id == c.id %}active{% endif %}">{{ c.nombre }}</a>
+        {% endfor %}
+    </div>
+</div>
 
 <div class="row">
     {% for p in productos %}
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <img src="{% if p.imagen_principal %}{{ p.imagen_principal.url }}{% endif %}" class="card-img-top" alt="{{ p.nombre }}">
-            <div class="card-body">
+    <div class="col-sm-6 col-md-4 mb-4">
+        <div class="card h-100 shadow-sm position-relative">
+            {% if p.destacado %}
+                <span class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark">★ TOP</span>
+            {% endif %}
+            {% if p.imagen_principal %}
+                <img src="{{ p.imagen_principal.url }}" class="card-img-top" alt="{{ p.nombre }}">
+            {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:220px;">
+                    <span class="text-muted">Sin imagen</span>
+                </div>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ p.nombre }}</h5>
-                <p class="card-text">${{ p.precio_base }}</p>
-            </div>
-            <div class="card-footer">
-                <a href="{% url 'mainApp:detalle_producto' p.slug %}" class="btn btn-primary">Ver Detalles</a>
+                <p class="card-text fw-bold text-primary">${{ p.precio_base }}</p>
+                <p class="mt-auto">
+                    <a href="{% url 'mainApp:detalle_producto' p.slug %}" class="btn btn-primary">Ver Detalles</a>
+                </p>
             </div>
         </div>
     </div>

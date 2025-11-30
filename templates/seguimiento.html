@@ -1,14 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="max-width:700px; margin:auto;">
-    
+<div class="mx-auto" style="max-width:800px;">
     <h2 class="mb-3">Seguimiento de Pedido</h2>
 
-    <form method="GET" action="" class="mb-4">
-        <input type="text" name="token" value="{{ token }}"
-               class="form-control" placeholder="Ingresa tu token de seguimiento" required>
-        <button class="btn btn-primary mt-2">Buscar</button>
+    <form method="GET" action="" class="d-flex gap-2 mb-4">
+        <input type="text" name="token" value="{{ token|default:'' }}" class="form-control" placeholder="Ingresa tu token de seguimiento" required>
+        <button class="btn btn-primary">Buscar</button>
     </form>
 
     {% if token and not pedido %}
@@ -18,8 +16,7 @@
     {% endif %}
 
     {% if pedido %}
-    <div class="card p-3">
-
+    <div class="card p-3 shadow-sm">
         <h4>Pedido encontrado</h4>
 
         <p><strong>Token:</strong> {{ pedido.token }}</p>
@@ -29,12 +26,24 @@
 
         <hr>
 
-        <p><strong>Estado del pedido:</strong> 
-            <span class="badge bg-info">{{ pedido.get_estado_display }}</span>
+        <p><strong>Estado del pedido:</strong>
+           {% if pedido.estado == 'finalizada' %}
+               <span class="badge badge-status bg-success">{{ pedido.get_estado_display }}</span>
+           {% elif pedido.estado == 'cancelada' %}
+               <span class="badge badge-status bg-danger">{{ pedido.get_estado_display }}</span>
+           {% else %}
+               <span class="badge badge-status bg-info">{{ pedido.get_estado_display }}</span>
+           {% endif %}
         </p>
 
-        <p><strong>Estado del pago:</strong> 
-            <span class="badge bg-warning">{{ pedido.get_estado_pago_display }}</span>
+        <p><strong>Estado del pago:</strong>
+           {% if pedido.estado_pago == 'pagado' %}
+               <span class="badge badge-status bg-success">{{ pedido.get_estado_pago_display }}</span>
+           {% elif pedido.estado_pago == 'parcial' %}
+               <span class="badge badge-status bg-warning">{{ pedido.get_estado_pago_display }}</span>
+           {% else %}
+               <span class="badge badge-status bg-secondary">{{ pedido.get_estado_pago_display }}</span>
+           {% endif %}
         </p>
 
         <p><strong>Total:</strong> ${{ pedido.total }}</p>
@@ -43,9 +52,9 @@
 
         <h5>Imágenes adjuntas</h5>
         {% if pedido.imagenes.all %}
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <div class="d-flex gap-2 flex-wrap">
                 {% for img in pedido.imagenes.all %}
-                    <img src="{{ img.imagen.url }}" style="width:120px; border-radius:8px;">
+                    <img src="{{ img.imagen.url }}" class="rounded" style="width:120px; height:120px; object-fit:cover;">
                 {% endfor %}
             </div>
         {% else %}
