@@ -45,7 +45,6 @@ def crear_pedido(request, slug=None):
     if request.method == 'POST':
         form = PedidoForm(request.POST, request.FILES)
         if form.is_valid():
-            # Guardar seguro: calcular total desde el producto en el servidor
             pedido = form.save(commit=False)
             try:
                 pedido.total = pedido.producto.precio_base
@@ -53,13 +52,11 @@ def crear_pedido(request, slug=None):
                 pedido.total = 0
             pedido.save()
 
-            # guardar imágenes adjuntas (form.save() original hacía esto)
             if request.FILES:
                 imagenes_files = request.FILES.getlist('imagenes')
                 for f in imagenes_files:
                     PedidoImagen.objects.create(pedido=pedido, imagen=f)
 
-            # Si el usuario solicitó pagar ahora (simulación), marcar pago
             try:
                 pagar_ahora = form.cleaned_data.get('pagar_ahora')
             except Exception:
@@ -83,18 +80,13 @@ def crear_pedido(request, slug=None):
 
 
 def marcar_pago(request, token):
-    """Simula la confirmación de pago: marca `estado_pago` como 'pagado'."""
     pedido = Pedido.objects.filter(token=token).first()
     if not pedido:
         return redirect('mainApp:seguimiento')
 
     pedido.estado_pago = 'pagado'
     pedido.save()
-
-    # No se envían correos desde esta acción.
-
-    # Redirect back to the seguimiento view with the token in querystring so
-    # the page remains showing the same pedido (no need to re-type the token).
+    
     return redirect(reverse('mainApp:seguimiento') + f'?token={pedido.token}')
 
 
