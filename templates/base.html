@@ -7,8 +7,65 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     {% load static %}
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        .dark-mode body {
+            background-color: #121212 !important;
+            color: #ffffff !important;
+        }
+
+        .dark-mode .navbar,
+        .dark-mode .card,
+        .dark-mode .alert,
+        .dark-mode .modal-content {
+            background-color: #1f1f1f !important;
+            color: #f1f1f1 !important;
+            border-color: #333 !important;
+        }
+
+        .dark-mode input,
+        .dark-mode select,
+        .dark-mode textarea {
+            background-color: #2a2a2a !important;
+            color: #ffffff !important;
+            border-color: #444 !important;
+        }
+
+        .dark-mode a {
+            color: #9ecbff !important;
+        }
+
+        .dark-mode .btn-primary {
+            background-color: #3c78d8 !important;
+            border-color: #2e5aa3 !important;
+        }
+
+        .dark-mode .btn-secondary,
+        .dark-mode .btn-outline-primary {
+            background-color: #2a2a2a !important;
+            color: #fff !important;
+            border-color: #555 !important;
+        }
+
+        .dark-mode .badge.bg-primary {
+            background-color: #3c78d8 !important;
+        }
+
+        #themeToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1rem;
+        }
+    </style>
 </head>
 <body>
+
+    <button id="themeToggle" class="btn btn-outline-primary">🌙 Modo Oscuro</button>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
         <div class="container">
             <a class="navbar-brand" href="{% url 'mainApp:catalogo' %}">Tienda Django</a>
@@ -36,5 +93,37 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        const themeToggle = document.getElementById("themeToggle");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+        function applyTheme(theme) {
+            if (theme === "dark") {
+                document.documentElement.classList.add("dark-mode");
+                themeToggle.textContent = "Modo Claro";
+            } else {
+                document.documentElement.classList.remove("dark-mode");
+                themeToggle.textContent = "Modo Oscuro";
+            }
+        }
+
+        let savedTheme = localStorage.getItem("theme");
+
+        if (!savedTheme) {
+            savedTheme = prefersDark ? "dark" : "light";
+            localStorage.setItem("theme", savedTheme);
+        }
+
+        applyTheme(savedTheme);
+
+        themeToggle.addEventListener("click", () => {
+            const newTheme = (savedTheme === "dark") ? "light" : "dark";
+            savedTheme = newTheme;
+            localStorage.setItem("theme", newTheme);
+            applyTheme(newTheme);
+        });
+    </script>
+
 </body>
 </html>
