@@ -48,6 +48,14 @@
 
         <p><strong>Total:</strong> ${{ pedido.total }}</p>
 
+        <div class="mt-3">
+            {% if pedido.estado_pago != 'pagado' %}
+                <a href="{% url 'mainApp:marcar_pago' pedido.token %}" class="btn btn-success">PAGAR</a>
+            {% else %}
+                <div class="alert alert-success">Pago recibido.</div>
+            {% endif %}
+        </div>
+
         <hr>
 
         <h5>Imágenes adjuntas</h5>

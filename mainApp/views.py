@@ -1,5 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Producto, Categoria, Pedido
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+
+from .models import Producto, Categoria, Pedido, PedidoImagen
 from .forms import PedidoForm
 
 
@@ -22,6 +24,7 @@ def catalogo(request):
         'productos': productos,
         'categorias': categorias,
         'categoria_actual': categoria_actual,
+        'q': q,
     })
 
 
@@ -31,32 +34,72 @@ def detalle_producto(request, slug):
 
 
 def crear_pedido(request, slug=None):
-    """
-    Crear un pedido. Si se pasa `slug`, preselecciona el producto en el formulario.
-    """
     initial = {}
     if slug:
         producto = Producto.objects.filter(slug=slug).first()
         if producto:
             initial['producto'] = producto
 
+    productos = Producto.objects.all()
+
     if request.method == 'POST':
         form = PedidoForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return render(request, 'pedido_creado.html')
+            # Guardar seguro: calcular total desde el producto en el servidor
+            pedido = form.save(commit=False)
+            try:
+                pedido.total = pedido.producto.precio_base
+            except Exception:
+                pedido.total = 0
+            pedido.save()
+
+            # guardar imágenes adjuntas (form.save() original hacía esto)
+            if request.FILES:
+                imagenes_files = request.FILES.getlist('imagenes')
+                for f in imagenes_files:
+                    PedidoImagen.objects.create(pedido=pedido, imagen=f)
+
+            # Si el usuario solicitó pagar ahora (simulación), marcar pago
+            try:
+                pagar_ahora = form.cleaned_data.get('pagar_ahora')
+            except Exception:
+                pagar_ahora = False
+            if pagar_ahora:
+                pedido.estado_pago = 'pagado'
+                pedido.save()
+
+            return render(request, 'pedido_creado.html', {
+                'token': pedido.token,
+                'pedido': pedido,
+            })
     else:
         form = PedidoForm(initial=initial)
 
-    return render(request, 'crear_pedido.html', {'form': form})
+    return render(request, 'crear_pedido.html', {
+        'form': form,
+        'productos': productos,
+        'initial_producto': initial.get('producto') if initial else None,
+    })
+
+
+def marcar_pago(request, token):
+    """Simula la confirmación de pago: marca `estado_pago` como 'pagado'."""
+    pedido = Pedido.objects.filter(token=token).first()
+    if not pedido:
+        return redirect('mainApp:seguimiento')
+
+    pedido.estado_pago = 'pagado'
+    pedido.save()
+
+    # No se envían correos desde esta acción.
+
+    # Redirect back to the seguimiento view with the token in querystring so
+    # the page remains showing the same pedido (no need to re-type the token).
+    return redirect(reverse('mainApp:seguimiento') + f'?token={pedido.token}')
 
 
 
 def seguimiento(request):
-    """
-    Muestra la pantalla para ingresar un token
-    y en caso de venir 'token' en GET, muestra el detalle.
-    """
     token = request.GET.get('token')
     pedido = None
 

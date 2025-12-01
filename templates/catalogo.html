@@ -9,7 +9,16 @@
             <small class="text-muted">Categoría: {{ categoria_actual.nombre }}</small>
         {% endif %}
     </div>
-    <small class="text-muted">{{ productos.count }} productos</small>
+    <div class="d-flex align-items-center gap-2">
+        <form method="get" action="{% url 'mainApp:catalogo' %}" class="d-flex" role="search">
+            {% if categoria_actual %}
+                <input type="hidden" name="categoria" value="{{ categoria_actual.slug }}">
+            {% endif %}
+            <input name="q" value="{{ q|default:'' }}" class="form-control form-control-sm" type="search" placeholder="Buscar productos..." aria-label="Buscar">
+            <button class="btn btn-sm btn-outline-secondary ms-2" type="submit">Buscar</button>
+        </form>
+        <div class="text-muted small">{% if productos %}{{ productos.count }} productos{% else %}0 productos{% endif %}</div>
+    </div>
 </div>
 
 <div class="mb-3">

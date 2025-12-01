@@ -1,7 +1,5 @@
 # tienda-online-django
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------
-30-11-2025
+***30-11-2025***
 Proyecto Django para venta de productos personalizados (poleras, polerones, tazones, productos 3D).
 
 Resumen de cambios integrados:
@@ -10,6 +8,11 @@ Resumen de cambios integrados:
 - `Producto.imagen_principal` para mostrar imagenes de forma correcta (anteriormente se rompían las imagenes)
 - Formulario de pedidos (`PedidoForm`) funcional con subida múltiple de imágenes, vista `crear_pedido` implementada y adaptada.
 - Barra de filtrado por categorías fuera del navbar y "★ TOP" para productos destacados.
+***01-12-2025***
+ - Buscador en el catálogo (por nombre), que preserva filtro de categoría.
+ - Flujo de pedido mejorado: al crear un pedido se genera un token de seguimiento que se muestra en pantalla.
+ - En `crear_pedido` el precio se autocompleta en la UI según el `producto` seleccionado y hay opción "Pagar" que marca el pedido como pagado.
+ - En `seguimiento` se puede marcar un pedido como pagado (botón `PAGAR`) y la vista recarga manteniendo el token.
 
 Archivos principales añadidos/modificados:
 - `templates/` : `base.html`, `catalogo.html`, `detalle_producto.html`, `crear_pedido.html`, `seguimiento.html`, `pedido_creado.html`
@@ -44,6 +47,12 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
+5) Cargar datos de ejemplo (seed)
+```
+python manage.py seed
+```
+Este comando crea categorías, productos de ejemplo, insumos y pedidos de muestra. Al crear productos desde `seed`, el script también prepara datos básicos (productos con slug, categoría y precio_base).
+
 5) Ejecutar servidor de desarrollo:
 ```
 python manage.py runserver
@@ -55,5 +64,11 @@ python manage.py runserver
 
 Notas y recomendaciones rápidas:
 - En desarrollo, `MEDIA_URL` ya está configurado en `tiendaOnline/settings.py`; las rutas se sirven automáticamente cuando `DEBUG=True`.
+
+Información adicional y buenas prácticas
+
+- Token de seguimiento: cuando se crea un pedido válido, la página de confirmación muestra el `token` y un botón para ir a `Seguimiento`. Esa vista permite ver detalles y simular el pago.
+- Pago (simulación): el proyecto implementa una opción de pago simulado (no hay integración con pasarela). Marcar "Pagar" en la creación o pulsar `PAGAR` en seguimiento cambia `estado_pago` a `pagado`.
+- No existe carpeta `media/`, por lo que las fotos no quedan guardadas ni registradas, pero la lógica del proyecto la integra, por lo que es posible agregar, modificar o eliminar fotos mientras EXISTA la carpeta.
 
 Estado actual: plataforma funcional, con necesidad de cambios mínimos.

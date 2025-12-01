@@ -8,6 +8,7 @@ class MultipleFileInput(forms.ClearableFileInput):
 
 class PedidoForm(forms.ModelForm):
     imagenes = forms.FileField(widget=MultipleFileInput(attrs={'multiple': True}), required=False)
+    pagar_ahora = forms.BooleanField(required=False, label='Pagar ahora (simulación)')
     
     class Meta:
         model = Pedido

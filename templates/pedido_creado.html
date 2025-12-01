@@ -4,10 +4,15 @@
 
 {% block content %}
 <div class="mx-auto" style="max-width:640px;">
-    <div class="alert alert-success">
+    <div class="alert alert-success" data-persist="true">
         <h4 class="alert-heading">Pedido creado</h4>
-        <p>Tu pedido se ha registrado correctamente. Te llegará un token de seguimiento.</p>
+        <p>Tu pedido se ha registrado correctamente.</p>
+        <p class="mb-0">Token de seguimiento: <strong>{{ token }}</strong></p>
+        <hr />
+        <p class="mb-0 mt-2">
+            <a href="{% url 'mainApp:seguimiento' %}?token={{ token }}" class="btn btn-outline-primary me-2">Seguir pedido</a>
+            <a href="{% url 'mainApp:catalogo' %}" class="btn btn-primary">Volver al catálogo</a>
+        </p>
     </div>
-    <a href="{% url 'mainApp:catalogo' %}" class="btn btn-primary">Volver al catálogo</a>
 </div>
 {% endblock %}
