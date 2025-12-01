@@ -1,5 +1,6 @@
 # tienda-online-django
 ***30-11-2025***
+
 Proyecto Django para venta de productos personalizados (poleras, polerones, tazones, productos 3D).
 
 Resumen de cambios integrados:
@@ -8,7 +9,9 @@ Resumen de cambios integrados:
 - `Producto.imagen_principal` para mostrar imagenes de forma correcta (anteriormente se rompían las imagenes)
 - Formulario de pedidos (`PedidoForm`) funcional con subida múltiple de imágenes, vista `crear_pedido` implementada y adaptada.
 - Barra de filtrado por categorías fuera del navbar y "★ TOP" para productos destacados.
+  
 ***01-12-2025***
+
  - Buscador en el catálogo (por nombre), que preserva filtro de categoría.
  - Flujo de pedido mejorado: al crear un pedido se genera un token de seguimiento que se muestra en pantalla.
  - En `crear_pedido` el precio se autocompleta en la UI según el `producto` seleccionado y hay opción "Pagar" que marca el pedido como pagado.
