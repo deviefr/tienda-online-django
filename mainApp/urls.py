@@ -10,4 +10,6 @@ urlpatterns = [
     path('producto/<slug:slug>/solicitar/', views.crear_pedido, name='crear_pedido'),
     path('seguimiento/', views.seguimiento, name='seguimiento'),  
     path('pedido/pagar/<str:token>/', views.marcar_pago, name='marcar_pago'),
+    path('reporte/', views.reporte_sistema, name='reporte'),
+
 ]
