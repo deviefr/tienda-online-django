@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2 class="mb-4">📊 Reporte del Sistema</h2>
+
+    <!-- FILTROS -->
+    <form class="form-inline mb-3" method="get">
+      <label>Desde: <input type="date" name="fecha_inicio" value="{{ fecha_inicio }}"></label>
+      <label>Hasta: <input type="date" name="fecha_fin" value="{{ fecha_fin }}"></label>
+
+      <label>Plataforma:
+        <select name="plataforma">
+          <option value="all" {% if plataforma_seleccionada == 'all' %}selected{% endif %}>Todas</option>
+          <option value="facebook" {% if plataforma_seleccionada == 'facebook' %}selected{% endif %}>Facebook</option>
+          <option value="instagram" {% if plataforma_seleccionada == 'instagram' %}selected{% endif %}>Instagram</option>
+          <option value="whatsapp" {% if plataforma_seleccionada == 'whatsapp' %}selected{% endif %}>WhatsApp</option>
+          <option value="presencial" {% if plataforma_seleccionada == 'presencial' %}selected{% endif %}>Presencial</option>
+          <option value="web" {% if plataforma_seleccionada == 'web' %}selected{% endif %}>Web</option>
+          <option value="otra" {% if plataforma_seleccionada == 'otra' %}selected{% endif %}>Otra</option>
+        </select>
+      </label>
+
+      <label>Top productos:
+        <input type="number" name="top_n" min="1" max="50" value="{{ top_n }}">
+      </label>
+
+      <button type="submit" class="btn btn-primary btn-sm">Aplicar</button>
+    </form>
+
+    <hr>
+
+    <!-- === GRAFICOS Y TABLAS === -->
+    <div style="display:flex; gap:20px; flex-wrap:wrap;">
+
+      <!-- === ESTADOS === -->
+      <div style="flex: 1 1 350px;">
+        <h3>Pedidos por Estado</h3>
+
+        <div style="height:300px;">
+          <canvas id="chartEstados"></canvas>
+        </div>
+
+        <table class="table table-striped mt-3">
+          <thead><tr><th>Estado</th><th>Cantidad</th></tr></thead>
+          <tbody>
+            {% for item in pedidos_por_estado %}
+            <tr><td>{{ item.estado }}</td><td>{{ item.total }}</td></tr>
+            {% empty %}
+            <tr><td colspan="2">No hay datos</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- === PLATAFORMAS === -->
+      <div style="flex: 1 1 350px;">
+        <h3>Pedidos por Plataforma</h3>
+
+        <div style="height:300px;">
+          <canvas id="chartPlataformas"></canvas>
+        </div>
+
+        <table class="table table-striped mt-3">
+          <thead><tr><th>Plataforma</th><th>Cantidad</th></tr></thead>
+          <tbody>
+            {% for item in pedidos_por_plataforma %}
+            <tr><td>{{ item.plataforma }}</td><td>{{ item.total }}</td></tr>
+            {% empty %}
+            <tr><td colspan="2">No hay datos</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- === PRODUCTOS === -->
+      <div style="flex: 1 1 700px;">
+        <h3>Productos más solicitados (Top {{ top_n }})</h3>
+
+        <div style="height:300px;">
+          <canvas id="chartProductos"></canvas>
+        </div>
+
+        <table class="table table-striped mt-3">
+          <thead><tr><th>Producto</th><th>Cantidad</th><th>Total Vendido</th></tr></thead>
+          <tbody>
+            {% for p in productos_mas %}
+            <tr>
+              <td>{{ p.producto_nombre }}</td>
+              <td>{{ p.cantidad }}</td>
+              <td>{{ p.total_vendido|default:"0" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No hay datos</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <hr>
+
+    <!-- === LISTA PEDIDOS === -->
+    <h3>Lista de Pedidos (máx 500)</h3>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Cliente</th>
+          <th>Producto</th>
+          <th>Plataforma</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ped in pedidos_lista %}
+        <tr>
+          <td>{{ ped.token }}</td>
+          <td>{{ ped.cliente_nombre }}</td>
+          <td>{{ ped.producto.nombre }}</td>
+          <td>{{ ped.plataforma }}</td>
+          <td>{{ ped.fecha_solicitud|default:ped.creado }}</td>
+          <td>{{ ped.estado }}</td>
+          <td>{{ ped.total }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">No hay pedidos en este rango</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+</div>
+
+<!-- === SCRIPTS === -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const estadosLabels = JSON.parse("{{ estados_labels|escapejs }}");
+  const estadosValues = JSON.parse("{{ estados_values|escapejs }}");
+
+  const plataformasLabels = JSON.parse("{{ plataformas_labels|escapejs }}");
+  const plataformasValues = JSON.parse("{{ plataformas_values|escapejs }}");
+
+  const productosLabels = JSON.parse("{{ productos_labels|escapejs }}");
+  const productosValues = JSON.parse("{{ productos_values|escapejs }}");
+
+  new Chart(document.getElementById('chartEstados'), {
+    type: 'doughnut',
+    data: {
+      labels: estadosLabels,
+      datasets: [{ data: estadosValues }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  new Chart(document.getElementById('chartPlataformas'), {
+    type: 'bar',
+    data: {
+      labels: plataformasLabels,
+      datasets: [{ label: 'Pedidos', data: plataformasValues }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  new Chart(document.getElementById('chartProductos'), {
+    type: 'bar',
+    data: {
+      labels: productosLabels,
+      datasets: [{ label: 'Cantidad', data: productosValues }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+</script>
+
+{% endblock %}
