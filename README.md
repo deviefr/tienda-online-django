@@ -81,7 +81,7 @@ python manage.py runserver
 El proyecto incluye 3 APIs construidas con django rest framework.
 Se incluyó una configuración para evitar errores con los formatos de fecha al editar pedidos en `settings.py`
 
-*** Rutas y ejemplos de uso ***
+***Rutas y ejemplos de uso***
 1) API de INSUMOS (gestión del stock): permite ver, crear, editar y eliminar insumos.
 - Listar/Crear: `http://127.0.0.1:8000/api/insumos/`
 - Detalle/Editar/Eliminar: `http://127.0.0.1:8000/api/insumos/<id>/`
