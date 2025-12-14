@@ -108,3 +108,12 @@ MEDIA_ROOT = MEDIA_DIR
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DATETIME_FORMAT': "%Y-%m-%dT%H:%M",
+    'DATETIME_INPUT_FORMATS': [
+        "%Y-%m-%dT%H:%M",
+        "%Y-%m-%d %H:%M",
+        "iso-8601",
+    ]
+}

@@ -5,8 +5,14 @@ from django.db.models import Count, Sum, F, Q
 from django.utils import timezone
 from datetime import datetime, timedelta
 
-from .models import Producto, Categoria, Pedido, PedidoImagen
+from rest_framework import viewsets, status, generics
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .models import Producto, Categoria, Pedido, PedidoImagen, Insumo
 from .forms import PedidoForm
+from .serializers import InsumoSerializer, PedidoSerializer, PedidoCreateUpdateSerializer
 
 
 def catalogo(request):
@@ -205,3 +211,78 @@ def reporte_sistema(request):
     }
 
     return render(request, "reporte.html", context)
+
+
+# API Views
+
+class InsumoListCreateView(generics.ListCreateAPIView):
+    queryset = Insumo.objects.all()
+    serializer_class = InsumoSerializer
+
+class InsumoDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Insumo.objects.all()
+    serializer_class = InsumoSerializer
+
+class PedidoCreateView(generics.CreateAPIView):
+    queryset = Pedido.objects.all()
+    serializer_class = PedidoCreateUpdateSerializer
+
+class PedidoUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = Pedido.objects.all()
+    serializer_class = PedidoCreateUpdateSerializer
+    lookup_field = 'token'
+
+class PedidoFiltrarView(APIView):
+    def get(self, request):
+        fecha_inicio = request.query_params.get('fecha_inicio')
+        fecha_fin = request.query_params.get('fecha_fin')
+        estados = request.query_params.getlist('estados')
+        max_resultados = request.query_params.get('max_resultados', 100)
+
+        try:
+            max_resultados = int(max_resultados)
+            if max_resultados < 1:
+                max_resultados = 100
+        except ValueError:
+            max_resultados = 100
+
+        pedidos = Pedido.objects.all()
+
+        # Filtrar por fechas
+        if fecha_inicio or fecha_fin:
+            from datetime import datetime
+            try:
+                fecha_inicio_dt = datetime.fromisoformat(fecha_inicio) if fecha_inicio else None
+            except ValueError:
+                return Response({'error': 'Formato de fecha_inicio inválido. Use YYYY-MM-DD'}, status=400)
+            
+            try:
+                fecha_fin_dt = datetime.fromisoformat(fecha_fin) if fecha_fin else None
+            except ValueError:
+                return Response({'error': 'Formato de fecha_fin inválido. Use YYYY-MM-DD'}, status=400)
+            
+            if fecha_inicio_dt and fecha_fin_dt:
+                pedidos = pedidos.filter(
+                    Q(fecha_solicitud__date__gte=fecha_inicio_dt.date(), fecha_solicitud__date__lte=fecha_fin_dt.date()) |
+                    Q(fecha_solicitud__isnull=True, creado__date__gte=fecha_inicio_dt.date(), creado__date__lte=fecha_fin_dt.date())
+                )
+            elif fecha_inicio_dt:
+                pedidos = pedidos.filter(
+                    Q(fecha_solicitud__date__gte=fecha_inicio_dt.date()) |
+                    Q(fecha_solicitud__isnull=True, creado__date__gte=fecha_inicio_dt.date())
+                )
+            elif fecha_fin_dt:
+                pedidos = pedidos.filter(
+                    Q(fecha_solicitud__date__lte=fecha_fin_dt.date()) |
+                    Q(fecha_solicitud__isnull=True, creado__date__lte=fecha_fin_dt.date())
+                )
+
+        # Filtrar por estados
+        if estados:
+            pedidos = pedidos.filter(estado__in=estados)
+
+        # Ordenar por fecha de creación descendente y limitar resultados
+        pedidos = pedidos.select_related('producto').order_by('-creado')[:max_resultados]
+
+        serializer = PedidoSerializer(pedidos, many=True)
+        return Response(serializer.data)

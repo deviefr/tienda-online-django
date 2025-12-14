@@ -74,7 +74,7 @@ class Command(BaseCommand):
             
         #Pedidos de ejemplo
         pedidos = [
-            ("pcp3001", "Juan Pérez", producto_objs["Polerón personalizado impresíon frontal"], "2024-06-01 10:00"),
+            ("pcp3001", "Juan Pérez", producto_objs["Polerón personalizado impresión frontal"], "2024-06-01 10:00"),
             ("pcp3002", "María Gómez", producto_objs["Taza personalizada sublimada"], "2024-06-02 14:30"),
             ("pcp3003", "Carlos Ruiz", producto_objs["Figura 3D personalizada"], "2024-06-03 09:15"),
             ("pcp3004", "Ana Torres", producto_objs["Sticker vinilo personalizado"], "2024-06-04 16:45"),
