@@ -9,7 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write("Iniciando la carga de datos...")
         
-        #Categorias personalizadas
+
         categorias = [
             ("Polerones Personalizados", True),
             ("Poleras Personalizadas", True),
@@ -20,16 +20,16 @@ class Command(BaseCommand):
         
         categoria_objs = {}
         for nombre, destacado in categorias:
-            obj, created = Categoria.objects.get_or_create(
+            obj, _ = Categoria.objects.get_or_create(
                 nombre=nombre,
                 defaults={
-                    'slug': slugify(nombre),
-                    'destacado': destacado},
+                    "slug": slugify(nombre),
+                    "destacado": destacado,
+                }
             )
             categoria_objs[nombre] = obj
-            
         
-        #Insumos personalizados
+
         insumos = [
             ("Vinilo textil premium", "Material", 50, "metros", "Siser", "Negro"),
             ("Filamento PLA 1kg", "Material 3D", 10, "kg", "Esun", "Blanco"),
@@ -38,63 +38,77 @@ class Command(BaseCommand):
             ("Resina UV 500ml", "Material 3D", 5, "litros", "Anycubic", "Transparente"),
         ]
         
-        for i in insumos:
+        for nombre, tipo, cantidad, unidad, marca, color in insumos:
             Insumo.objects.get_or_create(
-                nombre=i[0],
+                nombre=nombre,
                 defaults={
-                    'tipo': i[1],
-                    'cantidad': i[2],
-                    'unidad': i[3],
-                    'marca': i[4],
-                    'color': i[5],
+                    "tipo": tipo,
+                    "cantidad": cantidad,
+                    "unidad": unidad,
+                    "marca": marca,
+                    "color": color,
                 }
             )
-            
-        #Productos personalizados
+        
+
         productos = [
-            ("Polerón personalizado impresión frontal", categoria_objs["Polerones Personalizados"], 25000),
-            ("Polera personalizada full color", categoria_objs["Poleras Personalizadas"], 15000),
-            ("Taza personalizada sublimada", categoria_objs["Tazas Personalizadas"], 12000),
-            ("Figura 3D personalizada", categoria_objs["Impresiones 3D"], 50000),
-            ("Sticker vinilo personalizado", categoria_objs["Stickers y Vinilos"], 3000),
+            ("Polerón personalizado impresión frontal", "Polerones Personalizados", 25000),
+            ("Polera personalizada full color", "Poleras Personalizadas", 15000),
+            ("Taza personalizada sublimada", "Tazas Personalizadas", 12000),
+            ("Figura 3D personalizada", "Impresiones 3D", 50000),
+            ("Sticker vinilo personalizado", "Stickers y Vinilos", 3000),
         ]
         
         producto_objs = {}
-        for nombre, cat, precio in productos:
-            obj, created = Producto.objects.get_or_create(
+        for nombre, categoria_nombre, precio in productos:
+            categoria = categoria_objs.get(categoria_nombre)
+            if not categoria:
+                self.stdout.write(self.style.WARNING(f"Categoría '{categoria_nombre}' no encontrada"))
+                continue
+
+            obj, _ = Producto.objects.get_or_create(
                 nombre=nombre,
                 defaults={
-                    'slug': slugify(nombre),
-                    'categoria': cat,
-                    'precio_base': precio,
-                    'destacado': False,
+                    "slug": slugify(nombre),
+                    "categoria": categoria,
+                    "precio_base": precio,
+                    "destacado": False,
                 }
             )
             producto_objs[nombre] = obj
-            
-        #Pedidos de ejemplo
+        
+
         pedidos = [
-            ("pcp3001", "Juan Pérez", producto_objs["Polerón personalizado impresión frontal"], "2024-06-01 10:00"),
-            ("pcp3002", "María Gómez", producto_objs["Taza personalizada sublimada"], "2024-06-02 14:30"),
-            ("pcp3003", "Carlos Ruiz", producto_objs["Figura 3D personalizada"], "2024-06-03 09:15"),
-            ("pcp3004", "Ana Torres", producto_objs["Sticker vinilo personalizado"], "2024-06-04 16:45"),
-            ("pcp3005", "Luis Fernández", producto_objs["Polera personalizada full color"], "2024-06-05 11:20"),
+            ("pcp3001", "Juan Pérez", "Polerón personalizado impresión frontal", "2024-06-01 10:00"),
+            ("pcp3002", "María Gómez", "Taza personalizada sublimada", "2024-06-02 14:30"),
+            ("pcp3003", "Carlos Ruiz", "Figura 3D personalizada", "2024-06-03 09:15"),
+            ("pcp3004", "Ana Torres", "Sticker vinilo personalizado", "2024-06-04 16:45"),
+            ("pcp3005", "Luis Fernández", "Polera personalizada full color", "2024-06-05 11:20"),
         ]
         
-        for token, cliente, prod, fecha_str in pedidos:
+        for token, cliente, producto_nombre, fecha_str in pedidos:
+            producto = producto_objs.get(producto_nombre)
+
+            if not producto:
+                self.stdout.write(
+                    self.style.WARNING(f"Producto '{producto_nombre}' no encontrado, pedido omitido")
+                )
+                continue
+
             fecha = datetime.strptime(fecha_str, "%Y-%m-%d %H:%M")
+
             Pedido.objects.get_or_create(
                 token=token,
                 defaults={
-                    'cliente_nombre': cliente,
-                    'producto': prod,
-                    'fecha_solicitud': fecha,
-                    'plataforma': "web",
-                    'descripcion': f"Pedido de {prod.nombre} por {cliente}.",
-                    'estado': "solicitado",
-                    'estado_pago': "pendiente",
-                    'total': prod.precio_base,
+                    "cliente_nombre": cliente,
+                    "producto": producto,
+                    "fecha_solicitud": fecha,
+                    "plataforma": "web",
+                    "descripcion": f"Pedido de {producto.nombre} por {cliente}.",
+                    "estado": "solicitado",
+                    "estado_pago": "pendiente",
+                    "total": producto.precio_base,
                 }
             )
-            
+        
         self.stdout.write(self.style.SUCCESS("Carga de datos completada exitosamente."))
