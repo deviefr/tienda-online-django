@@ -93,8 +93,8 @@ Se incluyó una configuración para evitar errores con los formatos de fecha al 
 - Detalle/Editar/Eliminar: `https://david073471.pythonanywhere.com/api/insumos/<id>/`
 
 2) API de PEDIDOS (creación y edición):
-- Crear pedido (json): `http://127.0.0.1:8000/api/pedidos/`
-- Editar pedido: `http://127.0.0.1:8000/api/pedidos/<token>` (se usa el token, no el id)
+- Crear pedido (json): `https://david073471.pythonanywhere.com/api/pedidos/`
+- Editar pedido: `https://david073471.pythonanywhere.com/api/pedidos/<token>` (se usa el token, no el id)
 
 3) API de FILTRADO (reportes): ruta principal: `https://david073471.pythonanywhere.com/api/pedidos/filtrar/`
 Esta API permite filtrar pedidos usando parámetros en la URL (?param=valor)
