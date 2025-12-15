@@ -1,4 +1,4 @@
-# tienda-online-django
+<img width="660" height="171" alt="image" src="https://github.com/user-attachments/assets/a3902497-be0e-46a8-b3fa-a57382212a2b" /># tienda-online-django
 ***30-11-2025***
 
 Proyecto Django para venta de productos personalizados (poleras, polerones, tazones, productos 3D).
@@ -33,13 +33,12 @@ Resumen de cambios integrados:
 
 ---
 
-### Cómo clonar este repositorio (branch `probando-hola`) y ejecutar:
+### Cómo clonar este repositorio (branch `probando-hola`) y ejecutarlo en el python anywhere:
 
 1) Clonar el repo y cambiar al branch:
 ```
 git clone https://github.com/deviefr/tienda-online-django.git
 cd tienda-online-django
-git checkout probando-hola
 ```
 
 2) Crear y activar un entorno virtual (opcional):
@@ -72,9 +71,16 @@ Este comando crea categorías, productos, insumos y pedidos con fechas de JUNIO 
 python manage.py runserver
 ```
 
+Despliegue en PythonAnywhere
+Aplicación desplegada públicamente en:
+
+`https://david073471.pythonanywhere.com/`
+
+Se utiliza Python 3.10 + virtualenv, base de datos SQLite y collectstatic configurado.
+
 6) Acceder en el navegador:
-- Catálogo: `http://127.0.0.1:8000/catalogo/`
-- Admin (subir imágenes / gestionar productos): `http://127.0.0.1:8000/admin/`
+- Catálogo: `https://david073471.pythonanywhere.com`
+- Admin (subir imágenes / gestionar productos): `https://david073471.pythonanywhere.com/admin`
 
 ### Uso y configuración de APIs
 
@@ -83,14 +89,14 @@ Se incluyó una configuración para evitar errores con los formatos de fecha al 
 
 ***Rutas y ejemplos de uso***
 1) API de INSUMOS (gestión del stock): permite ver, crear, editar y eliminar insumos.
-- Listar/Crear: `http://127.0.0.1:8000/api/insumos/`
-- Detalle/Editar/Eliminar: `http://127.0.0.1:8000/api/insumos/<id>/`
+- Listar/Crear: `https://david073471.pythonanywhere.com/api/insumos`
+- Detalle/Editar/Eliminar: `https://david073471.pythonanywhere.com/api/insumos/<id>/`
 
 2) API de PEDIDOS (creación y edición):
 - Crear pedido (json): `http://127.0.0.1:8000/api/pedidos/`
 - Editar pedido: `http://127.0.0.1:8000/api/pedidos/<token>` (se usa el token, no el id)
 
-3) API de FILTRADO (reportes): ruta principal: `http://127.0.0.1:8000/api/pedidos/filtrar/`
+3) API de FILTRADO (reportes): ruta principal: `https://david073471.pythonanywhere.com/api/pedidos/filtrar/`
 Esta API permite filtrar pedidos usando parámetros en la URL (?param=valor)
 
 Parámetros permitidos por rúbrica:
@@ -100,9 +106,9 @@ Parámetros permitidos por rúbrica:
 - `max_resultados`: número entero para filtrar por un máximo de apariciones
 
 Ejemplos para probar en la plataforma:
-1. Filtrar por fechas (ej. pedidos de Junio 2024): `http://127.0.0.1:8000/api/pedidos/filtrar/?fecha_inicio=2024-06-01&fecha_fin=2024-06-30`
-2. Filtrar por Estado: `http://127.0.0.1:8000/api/pedidos/filtrar/?estados=solicitado`
-3. Filtrar Múltiples Estados + Límite: `http://127.0.0.1:8000/api/pedidos/filtrar/?estados=pagado&estados=pendiente&max_resultados=5`
+1. Filtrar por fechas (ej. pedidos de Junio 2024): `https://david073471.pythonanywhere.com/api/pedidos/filtrar/?fecha_inicio=2024-06-01&fecha_fin=2024-06-30`
+2. Filtrar por Estado: `https://david073471.pythonanywhere.com/api/pedidos/filtrar/?estados=solicitado`
+3. Filtrar Múltiples Estados + Límite: `https://david073471.pythonanywhere.com/api/pedidos/filtrar/?estados=pagado&estados=pendiente&max_resultados=5`
 
 
 ### Notas adicionales
