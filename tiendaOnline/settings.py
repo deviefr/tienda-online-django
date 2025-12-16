@@ -16,9 +16,9 @@ MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 
 SECRET_KEY = 'django-insecure-lt!%e@6#m0#i2n5)=ol%5@d9r(sb9865n(-e83nguhyko&*o!@'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*'] 
+ALLOWED_HOSTS = ['david073471.pythonanywhere.com']
 
 
 INSTALLED_APPS = [
