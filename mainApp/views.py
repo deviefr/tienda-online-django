@@ -150,7 +150,6 @@ def reporte_dashboard(request):
 
     pedidos_por_estado = pedidos.values("estado").annotate(total=Count("id")).order_by("-total")
 
-    # 🔥 CORREGIDO: evitar conflicto con el campo producto_id
     productos_mas_query = pedidos.values(
         prod_id=F("producto_id"),           # antes: producto_id -> conflicto
         producto_nombre=F("producto__nombre")
