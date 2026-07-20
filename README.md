@@ -140,14 +140,6 @@ python manage.py runserver
 
 ---
 
-# Mi participación
-
-Este fue un proyecto desarrollado en equipo.
-
-Mi participación incluyó el desarrollo e integración de funcionalidades backend y frontend utilizando Django, así como la implementación y mejora de distintas características del sistema en conjunto con el resto del equipo.
-
----
-
 # Competencias desarrolladas
 
 Durante este proyecto se fortalecieron conocimientos relacionados con:
