@@ -1,116 +1,183 @@
-<img width="660" height="171" alt="image" src="https://github.com/user-attachments/assets/a3902497-be0e-46a8-b3fa-a57382212a2b" /># tienda-online-django
-***30-11-2025***
+# Tienda Online Django
 
-Proyecto Django para venta de productos personalizados (poleras, polerones, tazones, productos 3D).
+Aplicación web desarrollada en equipo utilizando Django para la gestión de una tienda de productos personalizados.
 
-Resumen de cambios integrados:
-- Front-end reorganizado: plantillas y `static` (CSS/JS) añadidos; tema azul.
-- Plantillas mejoradas y responsive: `catalogo`, `detalle_producto`, `crear_pedido`, `seguimiento`.
-- `Producto.imagen_principal` para mostrar imagenes de forma correcta (anteriormente se rompían las imagenes)
-- Formulario de pedidos (`PedidoForm`) funcional con subida múltiple de imágenes, vista `crear_pedido` implementada y adaptada.
-- Barra de filtrado por categorías fuera del navbar y "★ TOP" para productos destacados.
-  
-***01-12-2025***
-
- - Buscador en el catálogo (por nombre), que preserva filtro de categoría.
- - Flujo de pedido mejorado: al crear un pedido se genera un token de seguimiento que se muestra en pantalla.
- - En `crear_pedido` el precio se autocompleta en la UI según el `producto` seleccionado y hay opción "Pagar" que marca el pedido como pagado.
- - En `seguimiento` se puede marcar un pedido como pagado (botón `PAGAR`) y la vista recarga manteniendo el token.
-
-***14-12-2025***
-
-- Implementación de **Django REST Framework**
-- API de Insumos: CRUD completo (listar, crear, editar, eliminar)
-- API de Pedidos: Creación vía json y actualización mediante token (sin listar ni eliminar)
-- API de Filtrado: Endpoint avanzado para filtrar por rango de fechas, estados y limitación de resultados.
+> Proyecto académico desarrollado como parte de la formación en Analista Programador.
 
 ---
 
-### Archivos principales añadidos/modificados:
-- `templates/` : `base.html`, `catalogo.html`, `detalle_producto.html`, `crear_pedido.html`, `seguimiento.html`, `pedido_creado.html`
-- `static/css/style.css`, `static/js/main.js`
-- `mainApp/models.py`, `mainApp/forms.py`, `mainApp/views.py`, `mainApp/urls.py`, `mainApp/serializers.py`
+# Descripción
+
+Tienda Online Django es una aplicación web orientada a la administración y venta de productos personalizados, permitiendo a los usuarios explorar un catálogo, realizar pedidos y hacer seguimiento del estado de sus compras.
+
+El proyecto fue desarrollado colaborativamente utilizando Django y Django REST Framework, integrando funcionalidades de administración, carga de imágenes, seguimiento de pedidos y una API REST para distintas operaciones.
 
 ---
 
-### Cómo clonar este repositorio (branch `probando-hola`) y ejecutarlo en el python anywhere:
+# Características
 
-1) Clonar el repo y cambiar al branch:
+- Catálogo de productos.
+- Filtro por categorías.
+- Buscador de productos.
+- Detalle de productos.
+- Creación de pedidos.
+- Seguimiento mediante token.
+- Gestión de imágenes.
+- Panel administrativo con Django Admin.
+- API REST.
+- Diseño responsive.
+
+---
+
+# Tecnologías utilizadas
+
+## Backend
+
+- Python
+- Django
+- Django REST Framework
+
+## Frontend
+
+- HTML5
+- CSS3
+- JavaScript
+
+## Base de datos
+
+- SQLite
+
+## Herramientas
+
+- Git
+- GitHub
+- Visual Studio Code
+
+---
+
+# Arquitectura
+
 ```
+Usuario
+    │
+    ▼
+Interfaz Web
+    │
+    ▼
+Django
+(Modelos • Vistas • Formularios • API REST)
+    │
+    ▼
+SQLite
+```
+
+---
+
+# Funcionalidades principales
+
+## Gestión de productos
+
+- Crear productos.
+- Editar productos.
+- Visualizar catálogo.
+- Filtrar por categorías.
+- Buscar por nombre.
+
+---
+
+## Gestión de pedidos
+
+- Crear pedidos personalizados.
+- Cargar imágenes de referencia.
+- Generación automática de token.
+- Seguimiento del estado del pedido.
+
+---
+
+## API REST
+
+El proyecto incorpora una API desarrollada con Django REST Framework para la gestión de información desde aplicaciones externas.
+
+Incluye operaciones CRUD para distintos recursos del sistema.
+
+---
+
+# Instalación
+
+```bash
 git clone https://github.com/deviefr/tienda-online-django.git
+
 cd tienda-online-django
+
+python -m venv venv
 ```
 
-2) Crear y activar un entorno virtual (opcional):
-```
-python -m venv .venv
-.\.venv\Scripts\Activate
+Activar entorno virtual
+
+Windows
+
+```bash
+venv\Scripts\activate
 ```
 
-3) Instalar dependencias mínimas (Django, Pillow para manejo de imágenes y Django Rest Framework para las APIs):
-```
-pip install --upgrade pip
-pip install Django Pillow djangorestframework
+Instalar dependencias
+
+```bash
+pip install -r requirements.txt
 ```
 
-4) Aplicar migraciones y crear superusuario:
-```
-python manage.py makemigrations
+Migraciones
+
+```bash
 python manage.py migrate
-python manage.py createsuperuser
 ```
 
-5) Cargar datos de ejemplo (seed)
-```
-python manage.py seed
-```
-Este comando crea categorías, productos, insumos y pedidos con fechas de JUNIO 2024 para pruebas.
+Ejecutar servidor
 
-5) Ejecutar servidor de desarrollo:
-```
+```bash
 python manage.py runserver
 ```
 
-Despliegue en PythonAnywhere
-Aplicación desplegada públicamente en:
+---
 
-`https://david073471.pythonanywhere.com/`
+# Mi participación
 
-Se utiliza Python 3.10 + virtualenv, base de datos SQLite y collectstatic configurado.
+Este fue un proyecto desarrollado en equipo.
 
-6) Acceder en el navegador:
-- Catálogo: `https://david073471.pythonanywhere.com`
-- Admin (subir imágenes / gestionar productos): `https://david073471.pythonanywhere.com/admin`
+Mi participación incluyó el desarrollo e integración de funcionalidades backend y frontend utilizando Django, así como la implementación y mejora de distintas características del sistema en conjunto con el resto del equipo.
 
-### Uso y configuración de APIs
+---
 
-El proyecto incluye 3 APIs construidas con django rest framework.
-Se incluyó una configuración para evitar errores con los formatos de fecha al editar pedidos en `settings.py`
+# Competencias desarrolladas
 
-***Rutas y ejemplos de uso***
-1) API de INSUMOS (gestión del stock): permite ver, crear, editar y eliminar insumos.
-- Listar/Crear: `https://david073471.pythonanywhere.com/api/insumos`
-- Detalle/Editar/Eliminar: `https://david073471.pythonanywhere.com/api/insumos/<id>/`
+Durante este proyecto se fortalecieron conocimientos relacionados con:
 
-2) API de PEDIDOS (creación y edición):
-- Crear pedido (json): `https://david073471.pythonanywhere.com/api/pedidos/`
-- Editar pedido: `https://david073471.pythonanywhere.com/api/pedidos/<token>` (se usa el token, no el id)
+- Desarrollo web con Django.
+- Desarrollo de API REST.
+- Arquitectura MVT.
+- Gestión de formularios.
+- Bases de datos relacionales.
+- Trabajo colaborativo utilizando Git.
+- Desarrollo de interfaces web.
+- Resolución de problemas.
 
-3) API de FILTRADO (reportes): ruta principal: `https://david073471.pythonanywhere.com/api/pedidos/filtrar/`
-Esta API permite filtrar pedidos usando parámetros en la URL (?param=valor)
+---
 
-Parámetros permitidos por rúbrica:
-- `fecha_inicio`: YYYY-MM-DD
-- `fecha_fin`: YYYY-MM-DD
-- `estados`: se puede repetir para filtrar varios (solicitado, pagado, etc)
-- `max_resultados`: número entero para filtrar por un máximo de apariciones
+# Estado del proyecto
 
-Ejemplos para probar en la plataforma:
-1. Filtrar por fechas (ej. pedidos de Junio 2024): `https://david073471.pythonanywhere.com/api/pedidos/filtrar/?fecha_inicio=2024-06-01&fecha_fin=2024-06-30`
-2. Filtrar por Estado: `https://david073471.pythonanywhere.com/api/pedidos/filtrar/?estados=solicitado`
-3. Filtrar Múltiples Estados + Límite: `https://david073471.pythonanywhere.com/api/pedidos/filtrar/?estados=pagado&estados=pendiente&max_resultados=5`
+Proyecto académico finalizado.
 
+La aplicación fue desarrollada con fines educativos y el código fuente permanece disponible para revisión.
 
-### Notas adicionales
-- Token de seguimiento: es un código único que se genera automáticamente, pero en el seed existen unos pre-definidos.
-- Media: no existe carpeta `media/` en el repo, las imágenes subidas se guardan localmente mientras exista la carpeta creada al subir archivos.
+---
+
+# Autor
+
+Proyecto desarrollado en equipo.
+
+Repositorio publicado por:
+
+**Javiera Sepúlveda**
+
+GitHub:
+https://github.com/deviefr
